@@ -3,7 +3,7 @@ import { HorizontalNavItemsType } from 'src/@core/layouts/types'
 
 const navigation = (): HorizontalNavItemsType => [
   {
-    title: 'Pacientes en Cola',
+    title: 'Pacientes en Espera',
     path: '/queuepacients',
     icon: 'mdi:home-outline',
   },

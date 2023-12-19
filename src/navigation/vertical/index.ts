@@ -4,7 +4,7 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): VerticalNavItemsType => {
   return [
     {
-      title: 'Pacientes en Cola',
+      title: 'Pacientes en Espera',
       path: '/queuepacients',
       icon: 'mdi:home-outline',
     },
