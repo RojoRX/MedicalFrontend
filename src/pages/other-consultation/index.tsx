@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker';
 import ConsultaDetail from 'src/views/forms/form-layouts/FormConsultaDetail';
 
-import { Divider, Typography } from '@mui/material';
+import { Button, Divider, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 
 
@@ -35,7 +35,7 @@ const ConsultationManagement = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/all-consultation-pacient/${userId}`);
-                
+
                 setConsultations(response.data); // Ajusta esta línea según la estructura real de tu respuesta
             } catch (error) {
                 console.error('Error al obtener las citas:', error);
@@ -76,8 +76,18 @@ const ConsultationManagement = () => {
     };
     return (
         <DatePickerWrapper>
-            <CardHeader title='Gestión de Consultas' sx={{ textAlign: 'center' }} />
-
+            <Grid item xs={12}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => router.push(`/apps/user/view/${userId}`)}
+                >
+                    Volver Atras
+                </Button>
+            </Grid>
+            <Grid item xs={12}>
+                <CardHeader title='Gestión de Consultas' sx={{ textAlign: 'center' }} />
+            </Grid>
             <CardContent>
                 <Typography sx={{ mb: 4 }}>Aqui puede ver a todas las consultas del paciente y seleccionar una para ver toda la informacion</Typography>
             </CardContent>

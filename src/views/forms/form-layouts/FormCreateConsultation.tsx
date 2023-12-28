@@ -37,7 +37,7 @@ const FormCreateConsultation = (props: Props) => {
         setOpen(true);
     };
     const handleClose = () => {
-        Router.push('/test');
+        Router.push(`/apps/user/view/${userId}`)
         setOpen(false);
     };
     const [formData, setFormData] = useState({
@@ -149,6 +149,7 @@ const FormCreateConsultation = (props: Props) => {
             }
             // Configura el mensaje de éxito para el diálogo
             setDialogMessage('Se guardaron los datos Correctamente!! :) ');
+            
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 // Si el servidor devuelve un mensaje de error, úsalo
@@ -196,9 +197,9 @@ const FormCreateConsultation = (props: Props) => {
                                     labelId='form-layouts-tabs-select-label'
                                     required
                                 >
-                                    <MenuItem value='Doctor A'>Doctor A</MenuItem>
-                                    <MenuItem value='Doctor B'>Doctor B</MenuItem>
-                                    <MenuItem value='Doctor C'>Doctor C</MenuItem>
+                                    <MenuItem value='Dr. Ramiro Quispe Zarate'>Dr. Ramiro Quispe Zarate</MenuItem>
+                                    <MenuItem value='Dra. Janneth Condori Llanos'>Dra. Janneth Condori Llanos</MenuItem>
+                                    <MenuItem value='Dr. Sara Montesinos'>Dr. Sara Montesinos</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>

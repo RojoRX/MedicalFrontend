@@ -1,6 +1,6 @@
 import React, { SyntheticEvent, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { Accordion, AccordionSummary, Divider, AccordionDetails, Grid, Box, CardContent, Card } from '@mui/material';
+import { Accordion, AccordionSummary, Divider, AccordionDetails, Grid, Box, CardContent, Card, Button } from '@mui/material';
 import Icon from 'src/@core/components/icon';
 type Props = {
     consultaDetails: any
@@ -39,6 +39,7 @@ const ConsultaDetail = ({ consultaDetails }: any) => {
             <Card sx={{ marginTop: '12px' }}>
                 <CardContent>
                     <Typography variant='h6'>Informacion del Paciente</Typography>
+                    
                     <Divider sx={{ mt: theme => `${theme.spacing(4)} !important` }} />
                     <Box sx={{ pt: 2, pb: 1 }}>
                         <Box sx={{ display: 'flex', mb: 2.7 }}>
