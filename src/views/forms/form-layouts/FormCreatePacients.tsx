@@ -16,6 +16,7 @@ import React from 'react'
 
 import { TransitionProps } from '@mui/material/transitions';
 import Router from 'next/router'
+import { format } from 'date-fns'
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -37,33 +38,54 @@ const FormCreatePacients = () => {
     const handleClose = () => {
         location.reload();
         setOpen(false);
-        
+
     };
     const [formData, setFormData] = useState({
         nombre: '',
-        edad: '',
+        fechaNacimiento: '',
         sexo: '',
         domicilio: '',
         carnet: '',
         contacto: ''
     });
     const [dialogMessage, setDialogMessage] = useState('');
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
         if (name === 'contacto' && value.length > 8) {
             return;
         }
+
         if (name === 'carnet' && value.length > 8) {
             return;
         }
-        if (name === 'edad' && value.length > 3) {
-            return;
+
+        if (name === 'fechaNacimiento') {
+            // Verificar si la fecha es válida antes de formatear
+            if (value) {
+                const formattedDate = formatDateForInput(value);
+                setFormData((prevData) => ({
+                    ...prevData,
+                    [name]: formattedDate
+                }));
+            }
+        } else {
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value
+            }));
         }
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value
-        }));
     };
+
+    const formatDateForInput = (inputDate: string): string => {
+        // Implementa la lógica para formatear la fecha aquí
+        // En este caso, asumimos que la fecha ya está en el formato correcto "dd/mm/aaaa"
+        return inputDate;
+    };
+
+
+
 
     const handleSelectChange = (e: SelectChangeEvent<string>) => {
         const selectedValue = e.target.value;
@@ -77,7 +99,7 @@ const FormCreatePacients = () => {
         // Convierte los nombres de campo a mayúsculas
         const formattedFormData = {
             Nombre: formData.nombre,
-            Edad: formData.edad,
+            FechaNacimiento: format(new Date(formData.fechaNacimiento), 'yyyy-MM-dd'),
             Sexo: formData.sexo,
             Domicilio: formData.domicilio,
             Carnet: formData.carnet,
@@ -86,11 +108,12 @@ const FormCreatePacients = () => {
         e.preventDefault();
         try {
             // Realiza la solicitud POST a tu API
+            //console.log(formattedFormData)
             const response = await axios.post(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/pacientes`, formattedFormData);
             // Configura el mensaje de éxito para el diálogo
             setDialogMessage(response.data.mensaje);
-            
-            
+
+
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 // Si el servidor devuelve un mensaje de error, úsalo
@@ -133,22 +156,28 @@ const FormCreatePacients = () => {
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                type='number'
-                                label='Edad'
-                                placeholder='35'
+                                type='date'
+                                label='Fecha de Nacimiento'
+                                InputLabelProps={{ shrink: true }}  // Agrega esta línea para evitar que la etiqueta se solape
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position='start'>
                                             <Icon icon='mdi-format-list-numbers' />
                                         </InputAdornment>
-                                    )
+                                    ),
+                                    inputProps: {
+                                        // Establecer el formato aceptado por el input date
+                                        format: 'yyyy-MM-dd',
+                                    },
                                 }}
-                                name='edad'
-                                value={formData.edad}
+                                name='fechaNacimiento'
+                                value={formData.fechaNacimiento}
                                 onChange={handleChange}
                                 required
                             />
                         </Grid>
+
+
 
                         <Grid item xs={12} sm={6}>
                             <FormControl fullWidth>

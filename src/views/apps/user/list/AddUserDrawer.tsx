@@ -36,6 +36,7 @@ import { TransitionProps } from '@mui/material/transitions'
 import axios from 'axios'
 import { Router } from 'next/router'
 import React from 'react'
+import { format } from 'date-fns'
 
 interface SidebarAddUserType {
   open: boolean
@@ -44,7 +45,7 @@ interface SidebarAddUserType {
 
 interface UserData {
   nombre: string
-  edad: number
+  fechaNacimiento: string
   sexo: string
   domicilio: string
   carnet: number
@@ -76,14 +77,14 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   justifyContent: 'space-between',
   backgroundColor: theme.palette.background.default
 }))
-
+const fechaActual = new Date();
 const schema = yup.object().shape({
-  edad: yup
-    .number()
-    .typeError('Debe llenar la Edad')
-    .min(0, obj => showErrors('Edad', obj.value.length, obj.min))
-    .max(120, obj => showErrors('Edad', obj.value.length, obj.max))
+  fechaNacimiento: yup
+    .date() // Cambia esto a 'date'
+    .typeError('Debe llenar la fecha de Nacimiento')
+    .max(fechaActual, 'La fecha de nacimiento no puede ser mayor o igual a la fecha actual') // Usa la fecha actual como valor máximo
     .required(),
+
   domicilio: yup.string().required(),
   contacto: yup
     .number()
@@ -103,7 +104,7 @@ const schema = yup.object().shape({
 
 const defaultValues = {
   nombre: '',
-  edad: Number(''),
+  fechaNacimiento: '',
   sexo: '',
   domicilio: '',
   carnet: Number(''),
@@ -149,9 +150,10 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   };
 
   const onSubmit = async (data: UserData) => {
+    console.log("Test")
     const formattedFormData = {
       Nombre: data.nombre,
-      Edad: data.edad,
+      FechaNacimiento: format(new Date(data.fechaNacimiento), 'yyyy-MM-dd'),
       Sexo: formData.sexo,
       Domicilio: data.domicilio,
       Carnet: data.carnet,
@@ -160,13 +162,14 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     //dispatch(addUser({ ...data, role, currentPlan: sexo }))
     toggle()
     //reset()
-    
+    console.log(formattedFormData)
     try {
       // Realiza la solicitud POST a tu API
+      console.log(formattedFormData)
       const response = await axios.post(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/pacientes`, formattedFormData);
       // Configura el mensaje de éxito para el diálogo
       setDialogMessage(response.data.mensaje);
-     
+
 
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -224,24 +227,30 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
             <Controller
-              name='edad'
+              name='fechaNacimiento'
               control={control}
               rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
-                  type='number'
+                  type='date'
                   value={value}
-                  label='Edad'
+                  label='Fecha de nacimiento'
                   onChange={onChange}
-                  placeholder='18'
-                  error={Boolean(errors.edad)}
+                  //error={Boolean(errors.fechaNacimiento)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  inputProps={{
+                    placeholder: '', // Esto establece el placeholder a una cadena vacía
+                  }}
                 />
+
               )}
             />
-            {errors.edad && <FormHelperText sx={{ color: 'error.main' }}>{errors.edad.message}</FormHelperText>}
-          </FormControl>
+            {errors.fechaNacimiento && <FormHelperText sx={{ color: 'error.main' }}>{errors.fechaNacimiento.message}</FormHelperText>}
+           </FormControl>
 
-          <FormControl  fullWidth sx={{ mb: 6 }}>
+          <FormControl fullWidth sx={{ mb: 6 }}>
             <InputLabel id='form-layouts-tabs-select-label'>Sexo</InputLabel>
             <Select
               label='Sexo'
@@ -254,7 +263,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               <MenuItem value='Femenino'>Femenino</MenuItem>
             </Select>
           </FormControl>
-           
+
           <FormControl fullWidth sx={{ mb: 6 }}>
             <Controller
               name='domicilio'

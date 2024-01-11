@@ -5,7 +5,7 @@ export type UsersType = {
   horaLlegada: string,
   ID_Paciente: number
   Nombre: string
-  Edad: number
+  Edad: string
   Sexo: string
   Domicilio: string
   Carnet: string

@@ -139,7 +139,8 @@ const UserView = () => {
   const [formDataPacient, setFormDataPacient] = useState({
     ID_Paciente: 0,
     Nombre: '',
-    Edad: 0,
+    Edad: '',
+    FechaNacimiento: '',
     Sexo: '',
     Domicilio: '',
     Carnet: '',
@@ -198,11 +199,12 @@ const UserView = () => {
             setFormDataPacient({
               ID_Paciente: pacient.ID_Paciente || 0,
               Nombre: pacient.Nombre || '',
-              Edad: pacient.Edad || 0,
+              Edad: pacient.Edad || '',
+              FechaNacimiento: pacient.FechaNacimiento || '',
               Sexo: pacient.Sexo || '',
               Domicilio: pacient.Domicilio || '',
               Carnet: pacient.Carnet || '',
-              active: pacient.active || 0, 
+              active: pacient.active || 0,
               contacto: pacient.contacto || null,
             });
             setStatePacient({
@@ -264,7 +266,7 @@ const UserView = () => {
   const datosPaciente = {
     idPaciente: currentUserPacient?.ID_Paciente || 0,
     nombre: currentUserPacient?.Nombre || '',
-    edad: currentUserPacient?.Edad || 0,
+    edad: currentUserPacient?.Edad || '',
     sexo: currentUserPacient?.Sexo || '',
     domicilio: currentUserPacient?.Domicilio || '',
     carnet: currentUserPacient?.Carnet || '',
@@ -307,11 +309,31 @@ const UserView = () => {
     if (name === 'Carnet' && value.length > 8) {
       return;
     }
-    if (name === 'Edad' && value.length > 2) {
-      return;
-    }
-    setFormDataPacient((prevData) => ({ ...prevData, [name]: value }));
+    if (name === 'FechaNacimiento') {
+      // Verificar si la fecha es válida antes de formatear
+      
+      if (value) {
+          const formattedDate = formatDateForInput(value);
+          setFormDataPacient((prevData) => ({
+              ...prevData,
+              [name]: formattedDate
+          }));
+          console.log(value)
+      }
+  } else {
+      setFormDataPacient((prevData) => ({
+          ...prevData,
+          [name]: value
+      }));
+  }
+
   };
+
+  const formatDateForInput = (inputDate: string): string => {
+    // Implementa la lógica para formatear la fecha aquí
+    // En este caso, asumimos que la fecha ya está en el formato correcto "dd/mm/aaaa"
+    return inputDate;
+};
   const handleChangeSelect = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     setFormDataPacient((prevData) => ({ ...prevData, [name]: value }));
@@ -320,14 +342,14 @@ const UserView = () => {
   const handleFormSubmit = async () => {
     try {
       // Realiza la llamada a la API para enviar el formulario
-      
+      console.log(formDataPacient)
       const response = await axios.put(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/pacientes/${userId}`, formDataPacient);
-      
+
       setDialogMessage("Datos Actualizados Correctamente :) ");
       setOpenEdit(false);
 
     } catch (error) {
-      
+
       if (axios.isAxiosError(error) && error.response) {
         // Si el servidor devuelve un mensaje de error, úsalo
         handleEditClose();
@@ -346,15 +368,15 @@ const UserView = () => {
     try {
       const response = await axios.put(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/pacientes/togglee/${userId}`);
       const updatedPatient = response.data;
-  
+
       // Actualiza el estado del paciente directamente con el nuevo valor de enEspera
       setStatePacient((prevData) => ({
         ...prevData,
         enEspera: updatedPatient.enEspera,
       }));
-  
+
       // Resto de la lógica...
-  
+
       // Emitir el evento al socket solo si el estado de enEspera ha cambiado
       if (updatedPatient.enEspera !== statePacient.enEspera) {
         socket.emit('enEsperaCambiado', { pacienteId: updatedPatient.ID_Paciente, enEspera: updatedPatient.enEspera });
@@ -363,7 +385,7 @@ const UserView = () => {
       console.error('Error al actualizar el estado de espera:', error);
     }
   };
-  
+
   // Resto de tu componente...
 
 
@@ -552,10 +574,19 @@ const UserView = () => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
-                      label='Edad'
-                      name='Edad'
-                      value={formDataPacient.Edad}
+                      type='date'
+                      label='Fecha de Nacimiento'
+                      InputLabelProps={{ shrink: true }}  // Agrega esta línea para evitar que la etiqueta se solape
+                      InputProps={{
+                        inputProps: {
+                          // Establecer el formato aceptado por el input date
+                          format: 'yyyy-MM-dd',
+                        },
+                      }}
+                      name='FechaNacimiento'
+                      value={formDataPacient.FechaNacimiento}
                       onChange={handleInputChange}
+                      required
                     />
                   </Grid>
                 </Grid>
