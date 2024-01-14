@@ -2,6 +2,10 @@
 import { ThemeColor } from 'src/@core/layouts/types'
 
 export type UsersType = {
+  id_cita: number;
+  doctor: string;
+  tipo_consulta: string;
+  fecha_cita: string;
   horaLlegada: string,
   ID_Paciente: number
   Nombre: string
@@ -56,4 +60,11 @@ export type ProjectListDataType = {
   projectTitle: string
   progressValue: number
   progressColor: ThemeColor
+}
+
+export type CitaType = {
+  id_cita: number;
+  doctor: string;
+  tipo_consulta: string;
+  fecha_cita: string;
 }

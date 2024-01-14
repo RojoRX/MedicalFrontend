@@ -8,6 +8,11 @@ const navigation = (): HorizontalNavItemsType => [
     icon: 'mdi:home-outline',
   },
   {
+    title: 'Pacientes en Cita',
+    path: '/citas-espera',
+    icon: 'mdi:human',
+  },
+  {
     title: 'Registrar Nuevos Pacientes',
     path: '/create-pacient',
     icon: 'mdi:human',
