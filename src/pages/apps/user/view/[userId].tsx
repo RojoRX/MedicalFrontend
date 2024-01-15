@@ -43,6 +43,7 @@ import React from 'react'
 import { TransitionProps } from '@mui/material/transitions';
 import { Slide } from '@mui/material'
 import socket from 'src/utils/socket'
+import AppointmentForm from 'src/views/dialogs/editCite'
 
 interface ColorsType {
   [key: string]: ThemeColor
@@ -159,7 +160,7 @@ const UserView = () => {
   const handlePlansClickOpen = () => setOpenPlans(true)
   const handlePlansClose = () => setOpenPlans(false)
   const router = useRouter()
-  const { userId } = router.query;
+  const { userId, id_cita } = router.query;
   const [isRequestSuccessful, setIsRequestSuccessful] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
@@ -186,6 +187,16 @@ const UserView = () => {
   ) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleNewAppointmentButtonClick = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleNewAppointmentDialogClose = () => {
+    setIsDialogOpen(false);
+  };
 
   useEffect(() => {
     const fetchPacienteData = async () => {
@@ -311,21 +322,21 @@ const UserView = () => {
     }
     if (name === 'FechaNacimiento') {
       // Verificar si la fecha es válida antes de formatear
-      
+
       if (value) {
-          const formattedDate = formatDateForInput(value);
-          setFormDataPacient((prevData) => ({
-              ...prevData,
-              [name]: formattedDate
-          }));
-          console.log(value)
-      }
-  } else {
-      setFormDataPacient((prevData) => ({
+        const formattedDate = formatDateForInput(value);
+        setFormDataPacient((prevData) => ({
           ...prevData,
-          [name]: value
+          [name]: formattedDate
+        }));
+        console.log(value)
+      }
+    } else {
+      setFormDataPacient((prevData) => ({
+        ...prevData,
+        [name]: value
       }));
-  }
+    }
 
   };
 
@@ -333,7 +344,7 @@ const UserView = () => {
     // Implementa la lógica para formatear la fecha aquí
     // En este caso, asumimos que la fecha ya está en el formato correcto "dd/mm/aaaa"
     return inputDate;
-};
+  };
   const handleChangeSelect = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     setFormDataPacient((prevData) => ({ ...prevData, [name]: value }));
@@ -484,7 +495,7 @@ const UserView = () => {
             <Button variant='contained' sx={{ mr: 2 }} onClick={() => setOpenEdit(true)}>
               Editar
             </Button>
-            <Button variant='contained' onClick={() => Router.push(`/create-consultation?userId=${userId}&enEspera=${statePacient.enEspera}`)}>
+            <Button variant='contained' onClick={() => Router.push(`/create-consultation?userId=${userId}&enEspera=${statePacient.enEspera}&idCita=${id_cita}`)}>
               Crear Consulta
             </Button>
             {/** 
@@ -494,9 +505,18 @@ const UserView = () => {
             <Button variant='contained' onClick={() => Router.push(`/other-consultation?userId=${userId}`)}>
               Otras Consultas
             </Button>
-            <Button color='primary' variant='outlined' onClick={handleToggleEnEspera}>
+            {/**<Button color='primary' variant='outlined' onClick={handleToggleEnEspera}>
               {statePacient.enEspera ? 'Quitar de Espera' : 'Poner en Espera'}
+            </Button> */}
+            <Button variant="contained" color="primary" onClick={handleNewAppointmentButtonClick}>
+              Nueva Cita
             </Button>
+
+            {isDialogOpen && (
+              <AppointmentForm userId={userId} onClose={handleNewAppointmentDialogClose} />
+            )}
+
+
 
           </CardActions>
 

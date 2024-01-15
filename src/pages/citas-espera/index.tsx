@@ -55,6 +55,7 @@ import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 import router from 'next/router'
 import { io } from 'socket.io-client'
 import { useQuery, useQueryClient } from 'react-query'
+import AppointmentForm from 'src/views/dialogs/editCite'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
@@ -127,31 +128,49 @@ const renderClient = (row: UsersType) => {
   }
 }
 
-const RowOptions = ({ id }: { id: number | string }) => {
+const RowOptions = ({ id, row }: { id: number | string; row: any }) => {
   const userId = id;
-  // ** Hooks
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch();
 
-  // ** State
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
-  const rowOptionsOpen = Boolean(anchorEl)
+  const rowOptionsOpen = Boolean(anchorEl);
 
   const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
-  const handleDelete = () => {
-    dispatch(deleteUser(id))
-    handleRowOptionsClose()
-  }
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      // Llama al endpoint para actualizar el campo enEspera
+      await axios.put(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/citas/${row.id_cita}/en-espera`);
+      // Puedes agregar lógica adicional después de una actualización exitosa si es necesario
+      // Cierra el menú de opciones de fila
+      handleRowOptionsClose();
+    } catch (error) {
+      console.error('Error al actualizar:', error);
+      // Puedes manejar errores aquí si es necesario
+    }
+  };
+
   const handleClick = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    router.push(`/apps/user/view/${userId}`);
-    handleRowOptionsClose(); // Cerrar opciones de fila después de hacer clic
+    router.push(`/apps/user/view/${userId}?id_cita=${row.id_cita}`);
+    handleRowOptionsClose();
+  };  
+
+  const handleEditClick = () => {
+    setOpenEditDialog(true);
+    handleRowOptionsClose();
+  };
+
+  const handleClose = () => {
+    setOpenEditDialog(false);
   };
 
   return (
@@ -180,15 +199,24 @@ const RowOptions = ({ id }: { id: number | string }) => {
           onClick={handleClick}
         >
           <Icon icon='mdi:eye-outline' fontSize={20} />
-          View
+          Ver Paciente
         </MenuItem>
-        <MenuItem onClick={handleRowOptionsClose} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem onClick={handleEditClick} sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='mdi:pencil-outline' fontSize={20} />
-          Edit
+          Editar Cita
         </MenuItem>
+             {/* Diálogo de edición */}
+      {openEditDialog && (
+        <AppointmentForm
+        idCita={row.id_cita}
+        doctor={row.doctor}
+        tipoConsulta={row.tipo_consulta}
+        onClose={handleClose}
+      />
+      )}
         <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='mdi:delete-outline' fontSize={20} />
-          Delete
+          Borrar Cita
         </MenuItem>
       </Menu>
     </>
@@ -209,8 +237,9 @@ const columns = [
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {renderClient(row)}
           <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-            <StyledLink href={`/apps/user/view/${row.ID_Paciente}`} sx={{ fontSize: '17px' }}>{Nombre}</StyledLink>
+            <StyledLink href={`/apps/user/view/${row.ID_Paciente}?id_cita=${row.id_cita}`} sx={{ fontSize: '17px' }}>{Nombre}</StyledLink>
             <Typography sx={{ fontSize: '12px' }} noWrap variant='caption'>
+              
               {row.Domicilio}
             </Typography>
           </Box>
@@ -251,8 +280,8 @@ const columns = [
   },*/
   {
     flex: 0.15,
-    minWidth: 140,
-    maxWidth: 150,
+    minWidth: 100,
+    maxWidth: 120,
     headerName: 'Carnet',
     field: 'Carnet',
     renderCell: ({ row }: CellType) => {
@@ -265,8 +294,8 @@ const columns = [
   },
   {
     flex: 0.1,
-    minWidth: 110,
-    maxWidth: 150,
+    minWidth: 150,
+    maxWidth: 180,
     field: 'Doctor',
     headerName: 'Doctor',
     renderCell: ({ row }: CellType) => {
@@ -289,7 +318,7 @@ const columns = [
           variant='subtitle1' 
           noWrap 
           sx={{ 
-            textTransform: 'capitalize',
+            textTransform: 'uppercase',
             color: getColor(row.tipo_consulta)
           }}
         >
@@ -300,8 +329,8 @@ const columns = [
   },  
   {
     flex: 0.1,
-    minWidth: 110,
-    maxWidth: 150,
+    minWidth: 200,
+    maxWidth: 200,
     field: 'Hora de Llegada',
     headerName: 'Hora de Llegada',
     renderCell: ({ row }: CellType) => {
@@ -315,18 +344,20 @@ const columns = [
   {
     flex: 0.1,
     minWidth: 90,
+    maxWidth: 90,
     sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions id={row.id_cita} />
+    field: 'Opciones',
+    headerName: 'Opciones',
+    renderCell: ({ row }: CellType) => <RowOptions id={row.ID_Paciente} row={row}  />
   }
 ]
+
+
 const fetchPacientesEnEspera = async () => {
   const response = await fetch(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/citas`);
   if (!response.ok) {
     throw new Error(`Error al obtener pacientes en espera: ${response.statusText}`);
   }
-  
   return response.json();
   //console.log(response.json())
 }
@@ -345,22 +376,23 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
   useEffect(() => {
     const socket = io(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}`, { transports: ['websocket'] });
-
+  
     socket.on('connect', () => {
       console.log('Conexión establecida con el servidor de sockets');
     });
-
-    socket.on('enEsperaCambiado', () => {
+  
+    socket.on('Socket emitido', () => {
       // Realiza una nueva llamada al endpoint para obtener los datos actualizados
       queryClient.invalidateQueries('pacientesEnEspera');
     });
-
+  
     // Cierra la conexión cuando el componente se desmonte
     return () => {
       socket.disconnect();
       console.log('Conexión cerrada');
     };
   }, [queryClient]);
+  
 
   if (isLoading) {
     return <div>Cargando...</div>;

@@ -29,10 +29,12 @@ const Transition = React.forwardRef(function Transition(
 type Props = {
     userId: any
     enEspera: string,
+    idCita:any
+
 }
 const FormCreateConsultation = (props: Props) => {
     const [open, setOpen] = React.useState(false);
-    const { userId, enEspera } = props
+    const { userId, enEspera, idCita } = props
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -44,6 +46,7 @@ const FormCreateConsultation = (props: Props) => {
         Motivo_Consulta: '',
         Nombre_Doctor: '',
         pacienteId: userId,
+        ID_Cita: idCita,
     });
     const [examenData, setExamenData] = useState({
         FrecuenciaCardiaca: 0,
@@ -140,6 +143,7 @@ const FormCreateConsultation = (props: Props) => {
             sendData.consultaId = response.data.consultaId.toString();
             // Realiza la segunda solicitud POST a tu API para ejecutar el procedimiento almacenado
             const response2 = await axios.post(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/allDataconsulta`, sendData);
+            const deleteCita = await axios.put(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/citas/${idCita}/en-espera`);
             // Ahora, quita al paciente de la cola
             const enEsperaBoolean = enEspera === 'true';
 
@@ -197,9 +201,10 @@ const FormCreateConsultation = (props: Props) => {
                                     labelId='form-layouts-tabs-select-label'
                                     required
                                 >
-                                    <MenuItem value='Dr. Ramiro Quispe Zarate'>Dr. Ramiro Quispe Zarate</MenuItem>
+                                    <MenuItem value='Dr. Silvio Ramiro Zarate'>Dr. Silvio Ramiro Zarate</MenuItem>
                                     <MenuItem value='Dra. Janneth Condori Llanos'>Dra. Janneth Condori Llanos</MenuItem>
                                     <MenuItem value='Dr. Sara Montesinos'>Dr. Sara Montesinos</MenuItem>
+                                    <MenuItem value='Dra. Patricia Nardin Mainz'>Dra. Patricia Nardin Mainz</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
