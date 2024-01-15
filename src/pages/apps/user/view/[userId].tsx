@@ -44,6 +44,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { Slide } from '@mui/material'
 import socket from 'src/utils/socket'
 import AppointmentForm from 'src/views/dialogs/editCite'
+import PatientAntecedentesTabs from 'src/views/forms/form-antecedentes'
 
 interface ColorsType {
   [key: string]: ThemeColor
@@ -403,7 +404,7 @@ const UserView = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <Card>
+      <Card>
           <CardContent sx={{ pt: 15, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
             {currentUserPacient?.[0]?.avatar && currentUserPacient?.[0]?.avatar.length ? (
               <CustomAvatar
@@ -516,12 +517,21 @@ const UserView = () => {
               <AppointmentForm userId={userId} onClose={handleNewAppointmentDialogClose} />
             )}
 
-
-
           </CardActions>
+          </Card>
+          <Grid item md={12} sx={{marginTop:"20px"}}>
+          <PatientAntecedentesTabs pacienteId={userId} />
+          </Grid>
+        
+          
+      
 
-          {isRequestSuccessful && <FormPacientData datos={datosPaciente}></FormPacientData>}
-
+          {isRequestSuccessful && 
+          <Grid item md={12} sx={{marginTop:"20px"}}>
+            <FormPacientData datos={datosPaciente}></FormPacientData>
+          </Grid>
+          }
+      </Grid>
           <Dialog
             open={openEdit}
             onClose={handleEditClose}
@@ -639,11 +649,9 @@ const UserView = () => {
               <Button onClick={handleCloseExit}>Correcto</Button>
             </DialogActions>
           </Dialog>
-
-        </Card>
       </Grid>
-
-    </Grid>
+    
+    
   )
 }
 export default UserView
