@@ -48,7 +48,7 @@ interface UserData {
   fechaNacimiento: string
   sexo: string
   domicilio: string
-  carnet: number
+  carnet: string | null
   contacto: number
 }
 const Transition = React.forwardRef(function Transition(
@@ -86,16 +86,19 @@ const schema = yup.object().shape({
     .required(),
 
   domicilio: yup.string().required(),
+
   contacto: yup
     .number()
     .typeError('El Numero de Contacto es necesario')
-    .min(7, obj => showErrors('Contact Number', obj.value.length, obj.min))
-    .required(),
+    .min(7, obj => showErrors('Contact Number', obj.value.length, obj.min)),
+    //.required(),
+/*
   carnet: yup
     .number()
     .typeError('El Carnet es Obligatorio')
     .min(2000000, obj => showErrors('Carnet', obj.value.length, obj.min))
     .required(),
+*/
   nombre: yup
     .string()
     .min(3, obj => showErrors('Nombre de Paciente', obj.value.length, obj.min))
@@ -107,8 +110,8 @@ const defaultValues = {
   fechaNacimiento: '',
   sexo: '',
   domicilio: '',
-  carnet: Number(''),
-  contacto: Number('')
+  carnet: null,
+  contacto: Number('70000000')
 }
 
 const SidebarAddUser = (props: SidebarAddUserType) => {
@@ -287,7 +290,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
             <Controller
               name='carnet'
               control={control}
-              rules={{ required: true }}
+              //rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
                   type='number'
@@ -306,7 +309,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
             <Controller
               name='contacto'
               control={control}
-              rules={{ required: true }}
+              //rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
                   type='number'

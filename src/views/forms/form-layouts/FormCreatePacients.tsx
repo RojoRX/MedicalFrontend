@@ -45,8 +45,8 @@ const FormCreatePacients = () => {
         fechaNacimiento: '',
         sexo: '',
         domicilio: '',
-        carnet: '',
-        contacto: ''
+        carnet: null,
+        contacto: null 
     });
     const [dialogMessage, setDialogMessage] = useState('');
 
@@ -210,14 +210,14 @@ const FormCreatePacients = () => {
                                 name='domicilio'
                                 value={formData.domicilio}
                                 onChange={handleChange}
-                                required
+                                //required
                             />
                         </Grid>
 
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                type='number'
+                                type='text'
                                 label='Carnet de Identidad'
                                 placeholder='12405828'
                                 InputProps={{
@@ -230,7 +230,7 @@ const FormCreatePacients = () => {
                                 name='carnet'
                                 value={formData.carnet}
                                 onChange={handleChange}
-                                required
+                                //required
                             />
                         </Grid>
 
@@ -253,7 +253,7 @@ const FormCreatePacients = () => {
                                 name='contacto'
                                 value={formData.contacto}
                                 onChange={handleChange}
-                                required
+                               // required
                             />
                         </Grid>
                         <Grid item xs={12}>

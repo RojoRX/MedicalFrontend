@@ -496,7 +496,9 @@ const UserView = () => {
             <Button variant='contained' sx={{ mr: 2 }} onClick={() => setOpenEdit(true)}>
               Editar
             </Button>
-            <Button variant='contained' onClick={() => Router.push(`/create-consultation?userId=${userId}&enEspera=${statePacient.enEspera}&idCita=${id_cita}`)}>
+            <Button variant='contained' 
+            onClick={() => Router.push(`/create-consultation?userId=${userId}&enEspera=${statePacient.enEspera}&idCita=${id_cita}`)}
+            disabled={!id_cita}>
               Crear Consulta
             </Button>
             {/** 

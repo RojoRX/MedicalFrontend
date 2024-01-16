@@ -102,17 +102,21 @@ const PatientAntecedentesTabs: React.FC<Props> = ({ pacienteId }) => {
                 <Divider />
                 <CardContent>
                     <TabPanel value='view-antecedentes'>
-                        <ul>
-                            {antecedentes.map((antecedente) => (
-                                <li key={antecedente.ID_Antecedente}>
-                                    {antecedente.nombre} - {antecedente.descripcion}
-                                </li>
-                            ))}
-                        </ul>
+                        {antecedentes && antecedentes.length > 0 ? (
+                            <ul>
+                                {antecedentes.map((antecedente) => (
+                                    <li key={antecedente.ID_Antecedente}>
+                                        {antecedente.nombre} - {antecedente.descripcion}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No hay datos para mostrar</p>
+                        )}
                     </TabPanel>
                     <TabPanel value='add-antecedente'>
                         <Grid container spacing={2}>
-                            <Grid item md={12} sx={{marginBottom:"10px"}}>
+                            <Grid item md={12} sx={{ marginBottom: "10px" }}>
                                 <TextField
                                     fullWidth
                                     label='Alergia'
@@ -120,7 +124,7 @@ const PatientAntecedentesTabs: React.FC<Props> = ({ pacienteId }) => {
                                     onChange={handleNewAntecedenteChange('nombre')}
                                 />
                             </Grid>
-                            <Grid item md={12} >
+                            <Grid item md={12}>
                                 <TextField
                                     fullWidth
                                     label='Descripcion'
@@ -138,24 +142,25 @@ const PatientAntecedentesTabs: React.FC<Props> = ({ pacienteId }) => {
                     <TabPanel value='delete-antecedente'>
                         <FormControl fullWidth>
                             <InputLabel>Seleccione una alergia para borrarla</InputLabel>
-                            <Select sx={{marginBottom:"15px"}}
+                            <Select
+                                sx={{ marginBottom: "15px" }}
                                 label='Seleccione una alergia para borrarla'
                                 onChange={(event: SelectChangeEvent<unknown>) => {
                                     setSelectedAntecedenteId(event.target.value as number);
                                 }}
                             >
-                                {antecedentes.map((antecedente) => (
-                                    <MenuItem key={antecedente.ID_Antecedente} value={antecedente.ID_Antecedente}>
-                                        {antecedente.nombre} - {antecedente.descripcion}
-                                    </MenuItem>
-                                ))}
+                                {antecedentes && antecedentes.length > 0 ? (
+                                    antecedentes.map((antecedente) => (
+                                        <MenuItem key={antecedente.ID_Antecedente} value={antecedente.ID_Antecedente}>
+                                            {antecedente.nombre} - {antecedente.descripcion}
+                                        </MenuItem>
+                                    ))
+                                ) : (
+                                    <MenuItem disabled>No hay alergias disponibles</MenuItem>
+                                )}
                             </Select>
-
                         </FormControl>
-                        <Button
-                            variant='contained'
-                            onClick={handleDeleteAntecedente}
-                        >
+                        <Button variant='contained' onClick={handleDeleteAntecedente}>
                             Borrar
                         </Button>
                     </TabPanel>
@@ -163,6 +168,7 @@ const PatientAntecedentesTabs: React.FC<Props> = ({ pacienteId }) => {
             </TabContext>
         </Card>
     );
+    
 };
 
 export default PatientAntecedentesTabs;
