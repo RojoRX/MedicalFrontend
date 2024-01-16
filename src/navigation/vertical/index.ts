@@ -5,11 +5,6 @@ const navigation = (): VerticalNavItemsType => {
   return [
     {
       title: 'Pacientes en Espera',
-      path: '/queuepacients',
-      icon: 'mdi:home-outline',
-    },
-    {
-      title: 'Pacientes en Cita',
       path: '/citas-espera',
       icon: 'mdi:human',
     },
@@ -22,6 +17,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Gestionar Pacientes',
       path: '/test',
       icon: 'mdi:human-male-female',
+    },
+    {
+      title: 'Estadísticas y Detalles de Citas Médicas',
+      path: '/gestion-citas',
+      icon: 'mdi:human',
     },
 
   ]
