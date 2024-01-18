@@ -56,7 +56,7 @@ import router from 'next/router'
 import { io } from 'socket.io-client'
 import { useQuery, useQueryClient } from 'react-query'
 import AppointmentForm from 'src/views/dialogs/editCite'
-import { TextField } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import CitasStatisticsCard from 'src/views/card'
 
 interface UserRoleType {
@@ -365,19 +365,21 @@ const getCurrentDate = () => {
     return `${year}-${month}-${day}`;
 };
 
+
 const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const [valueDate, setValueDate] = useState<string>(getCurrentDate());
     const [valueFilter, setValueFilter] = useState<string>('');
     const [pageSize, setPageSize] = useState<number>(50);
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false);
     const queryClient = useQueryClient();
-
+    const PdfApiUrl = `http://${process.env.NEXT_PUBLIC_SERVER_HOST}/informe/detallado/${valueDate}`;
     const [patients, setPatients] = useState<UsersType[]>([]);
     const [value, setValue] = useState<string>('');
     const [filteredPatients, setFilteredPatients] = useState<UsersType[]>([]);
 
     const fetchPacientesEnEspera = async (day: string) => {
         const response = await fetch(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/citas/by-day/${day}`);
+        
         if (!response.ok) {
             throw new Error(`Error al obtener pacientes en espera: ${response.statusText}`);
         }
@@ -436,6 +438,9 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
         setValueDate(newDate);
         refetch();
     };
+    const openPdfInNewWindow = (url: string) => {
+        window.open(url, '_blank');
+    };
 
     if (isLoading) {
         return <div>Cargando...</div>;
@@ -466,6 +471,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
                             sx={{ mb: 2 }}
                         />
                     </CardContent>
+                  
                 </Card>
             </Grid>
             <Grid item md={12} xs={12}>
@@ -488,7 +494,14 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
                 <Grid item xs={12}>
                     <Card>
                         <CardHeader title='Pacientes en Fila' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
+
                         <Divider />
+                        <Grid item xs={4} sx={{ margin: "10px" }}>
+                        <Button variant="contained" onClick={() => openPdfInNewWindow(PdfApiUrl)} sx={{ marginTop: '20px' }}>
+                        Abrir Informe De Citas PDF
+                    </Button>
+                        </Grid>
+
                         <Grid item xs={12} sx={{ margin: "10px" }}>
                             <TextField
                                 id="search-input"

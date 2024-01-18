@@ -404,7 +404,7 @@ const UserView = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-      <Card>
+        <Card>
           <CardContent sx={{ pt: 15, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
             {currentUserPacient?.[0]?.avatar && currentUserPacient?.[0]?.avatar.length ? (
               <CustomAvatar
@@ -496,18 +496,31 @@ const UserView = () => {
             <Button variant='contained' sx={{ mr: 2 }} onClick={() => setOpenEdit(true)}>
               Editar
             </Button>
-            <Button variant='contained' 
-            onClick={() => Router.push(`/create-consultation?userId=${userId}&enEspera=${statePacient.enEspera}&idCita=${id_cita}`)}
-            disabled={!id_cita}>
+            <Button
+              variant='contained'
+              onClick={() => Router.push(`/create-consultation?userId=${userId}&enEspera=${statePacient.enEspera}&idCita=${id_cita || ''}`)}
+              disabled={id_cita === undefined}
+            >
               Crear Consulta
             </Button>
+
             {/** 
             <Button color='error' variant='outlined' onClick={() => setSuspendDialogOpen(true)}>
               Suspender
             </Button>*/}
-            <Button variant='contained' onClick={() => Router.push(`/other-consultation?userId=${userId}`)}>
+            <Button
+              variant='contained'
+              onClick={() => {
+                if (id_cita !== undefined) {
+                  Router.push(`/other-consultation?userId=${userId}&idCita=${id_cita}`);
+                } else {
+                  Router.push(`/other-consultation?userId=${userId}`);
+                }
+              }}
+            >
               Otras Consultas
             </Button>
+
             {/**<Button color='primary' variant='outlined' onClick={handleToggleEnEspera}>
               {statePacient.enEspera ? 'Quitar de Espera' : 'Poner en Espera'}
             </Button> */}
@@ -520,140 +533,140 @@ const UserView = () => {
             )}
 
           </CardActions>
-          </Card>
-          <Grid item md={12} sx={{marginTop:"20px"}}>
+        </Card>
+        <Grid item md={12} sx={{ marginTop: "20px" }}>
           <PatientAntecedentesTabs pacienteId={userId} />
-          </Grid>
-        
-          
-      
+        </Grid>
 
-          {isRequestSuccessful && 
-          <Grid item md={12} sx={{marginTop:"20px"}}>
+
+
+
+        {isRequestSuccessful &&
+          <Grid item md={12} sx={{ marginTop: "20px" }}>
             <FormPacientData datos={datosPaciente}></FormPacientData>
           </Grid>
-          }
+        }
       </Grid>
-          <Dialog
-            open={openEdit}
-            onClose={handleEditClose}
-            aria-labelledby='user-view-edit'
-            sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
-            aria-describedby='user-view-edit-description'
-          >
-            <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-              Editar Informacion de Usuario
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
-                Actualizar la Informacion del Usuario Actual.
-              </DialogContentText>
-              <form>
-                <Grid container spacing={6}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label='Nombre Completo'
-                      name='Nombre'
-                      value={formDataPacient.Nombre}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label='Carnet de Identidad'
-                      name='Carnet'
-                      value={formDataPacient.Carnet}
-                      onChange={handleInputChange}
+      <Dialog
+        open={openEdit}
+        onClose={handleEditClose}
+        aria-labelledby='user-view-edit'
+        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+        aria-describedby='user-view-edit-description'
+      >
+        <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+          Editar Informacion de Usuario
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText variant='body2' id='user-view-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+            Actualizar la Informacion del Usuario Actual.
+          </DialogContentText>
+          <form>
+            <Grid container spacing={6}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label='Nombre Completo'
+                  name='Nombre'
+                  value={formDataPacient.Nombre}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label='Carnet de Identidad'
+                  name='Carnet'
+                  value={formDataPacient.Carnet}
+                  onChange={handleInputChange}
 
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id='user-view-status-label'>Sexo:</InputLabel>
-                      <Select
-                        label='Sexo'
-                        name='Sexo'
-                        value={formDataPacient.Sexo}
-                        onChange={handleChangeSelect}
-                        id='user-view-status'
-                        labelId='user-view-status-label'
-                      >
-                        <MenuItem value='MASCULINO'>MASCULINO</MenuItem>
-                        <MenuItem value='FEMENINO'>FEMENINO</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label='Contacto'
-                      name='contacto'
-                      value={formDataPacient.contacto}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label='Domicilio'
-                      name='Domicilio'
-                      value={formDataPacient.Domicilio}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      type='date'
-                      label='Fecha de Nacimiento'
-                      InputLabelProps={{ shrink: true }}  // Agrega esta línea para evitar que la etiqueta se solape
-                      InputProps={{
-                        inputProps: {
-                          // Establecer el formato aceptado por el input date
-                          format: 'yyyy-MM-dd',
-                        },
-                      }}
-                      name='FechaNacimiento'
-                      value={formDataPacient.FechaNacimiento}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </Grid>
-                </Grid>
-              </form>
-            </DialogContent>
-            <DialogActions sx={{ justifyContent: 'center' }}>
-              <Button variant='contained' sx={{ mr: 1 }} onClick={handleFormSubmit}>
-                Actualizar
-              </Button>
-              <Button variant='outlined' color='secondary' onClick={handleEditClose}>
-                Cancelar
-              </Button>
-            </DialogActions>
-          </Dialog>
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id='user-view-status-label'>Sexo:</InputLabel>
+                  <Select
+                    label='Sexo'
+                    name='Sexo'
+                    value={formDataPacient.Sexo}
+                    onChange={handleChangeSelect}
+                    id='user-view-status'
+                    labelId='user-view-status-label'
+                  >
+                    <MenuItem value='MASCULINO'>MASCULINO</MenuItem>
+                    <MenuItem value='FEMENINO'>FEMENINO</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label='Contacto'
+                  name='contacto'
+                  value={formDataPacient.contacto}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label='Domicilio'
+                  name='Domicilio'
+                  value={formDataPacient.Domicilio}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type='date'
+                  label='Fecha de Nacimiento'
+                  InputLabelProps={{ shrink: true }}  // Agrega esta línea para evitar que la etiqueta se solape
+                  InputProps={{
+                    inputProps: {
+                      // Establecer el formato aceptado por el input date
+                      format: 'yyyy-MM-dd',
+                    },
+                  }}
+                  name='FechaNacimiento'
+                  value={formDataPacient.FechaNacimiento}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Grid>
+            </Grid>
+          </form>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center' }}>
+          <Button variant='contained' sx={{ mr: 1 }} onClick={handleFormSubmit}>
+            Actualizar
+          </Button>
+          <Button variant='outlined' color='secondary' onClick={handleEditClose}>
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-          <UserSuspendDialog open={suspendDialogOpen} setOpen={setSuspendDialogOpen} userId={userId} />
-          <Dialog
-            open={open}
-            TransitionComponent={Transition}
-            onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle>{"Actualizar datos de Paciente"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-slide-description">
-                {dialogMessage}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseExit}>Correcto</Button>
-            </DialogActions>
-          </Dialog>
-      </Grid>
-    
-    
+      <UserSuspendDialog open={suspendDialogOpen} setOpen={setSuspendDialogOpen} userId={userId} />
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Actualizar datos de Paciente"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {dialogMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseExit}>Correcto</Button>
+        </DialogActions>
+      </Dialog>
+    </Grid>
+
+
   )
 }
 export default UserView

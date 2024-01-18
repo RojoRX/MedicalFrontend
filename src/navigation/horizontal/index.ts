@@ -4,13 +4,8 @@ import { HorizontalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): HorizontalNavItemsType => [
   {
     title: 'Pacientes en Espera',
-    path: '/queuepacients',
-    icon: 'mdi:home-outline',
-  },
-  {
-    title: 'Pacientes en Cita',
     path: '/citas-espera',
-    icon: 'mdi:human',
+    icon: 'mdi:human-greeting',
   },
   {
     title: 'Registrar Nuevos Pacientes',
@@ -21,6 +16,11 @@ const navigation = (): HorizontalNavItemsType => [
     title: 'Gestionar Pacientes',
     path: '/test',
     icon: 'mdi:human-male-female',
+  },
+  {
+    title: 'Estadísticas y Detalles de Citas Médicas',
+    path: '/gestion-citas',
+    icon: 'mdi:database',
   },
 ]
 

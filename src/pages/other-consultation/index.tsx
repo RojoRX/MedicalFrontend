@@ -18,6 +18,8 @@ import { useRouter } from 'next/router';
 const ConsultationManagement = () => {
     const router = useRouter()
     const userId = router.query.userId;
+    const id_cita = router.query.idCita;
+
     const [consultations, setConsultations] = useState<Consultation[]>([]);
     const [selectedConsultation, setSelectedConsultation] = useState('');
     const [consultaDetails, setConsultaDetails] = useState(null);
@@ -80,10 +82,17 @@ const ConsultationManagement = () => {
                 <Button
                     variant="outlined"
                     color="primary"
-                    onClick={() => router.push(`/apps/user/view/${userId}`)}
+                    onClick={() => {
+                        if (id_cita !== undefined) {
+                            router.push(`/apps/user/view/${userId}?id_cita=${id_cita}`);
+                        } else {
+                            router.push(`/apps/user/view/${userId}`);
+                        }
+                    }}
                 >
                     Volver Atras
                 </Button>
+
             </Grid>
             <Grid item xs={12}>
                 <CardHeader title='Gestión de Consultas' sx={{ textAlign: 'center' }} />
