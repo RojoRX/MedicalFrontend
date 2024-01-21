@@ -37,7 +37,7 @@ const PatientAntecedentesTabs: React.FC<Props> = ({ pacienteId }) => {
     useEffect(() => {
         const fetchAntecedentes = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/antecedentes-personales/${pacienteId}`);
+                const response = await fetch(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/antecedentes-personales/${pacienteId}`);
                 const data: Antecedente[] = await response.json();
                 setAntecedentes(data);
             } catch (error) {
@@ -59,7 +59,7 @@ const PatientAntecedentesTabs: React.FC<Props> = ({ pacienteId }) => {
     };
 
     const handleAddNewAntecedente = () => {
-        fetch(`http://localhost:3000/antecedentes-personales/${pacienteId}`, {
+        fetch(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/antecedentes-personales/${pacienteId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const PatientAntecedentesTabs: React.FC<Props> = ({ pacienteId }) => {
 
     const handleDeleteAntecedente = () => {
         if (selectedAntecedenteId) {
-            fetch(`http://localhost:3000/antecedentes-personales/${selectedAntecedenteId}`, {
+            fetch(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/antecedentes-personales/${selectedAntecedenteId}`, {
                 method: 'DELETE',
             })
                 .then(() => {
