@@ -293,11 +293,11 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               //rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
-                  type='number'
+                  type='text'
                   value={value}
                   label='Carnet de Identidad'
                   onChange={onChange}
-                  placeholder='4008980'
+                  placeholder='00000010'
                   error={Boolean(errors.carnet)}
                 />
               )}
