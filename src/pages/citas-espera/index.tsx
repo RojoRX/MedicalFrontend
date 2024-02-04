@@ -157,6 +157,18 @@ const RowOptions = ({ id, row }: { id: number | string; row: any }) => {
       // Puedes manejar errores aquí si es necesario
     }
   };
+  const handleDeleteCita = async () => {
+    try {
+      // Llama al endpoint para eliminar la cita
+      await axios.delete(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/citas/${row.id_cita}`);
+      // Puedes agregar lógica adicional después de una eliminación exitosa si es necesario
+      // Cierra el menú de opciones de fila
+      handleRowOptionsClose();
+    } catch (error) {
+      console.error('Error al eliminar:', error);
+      // Puedes manejar errores aquí si es necesario
+    }
+  };
 
   const handleClick = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -216,7 +228,12 @@ const RowOptions = ({ id, row }: { id: number | string; row: any }) => {
       )}
         <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='mdi:delete-outline' fontSize={20} />
-          Borrar Cita
+          Quita Cita de Espera
+        </MenuItem>
+
+        <MenuItem onClick={handleDeleteCita} sx={{ '& svg': { mr: 2 } }}>
+          <Icon icon='mdi:delete-outline' fontSize={20} />
+          Eliminar Cita
         </MenuItem>
       </Menu>
     </>

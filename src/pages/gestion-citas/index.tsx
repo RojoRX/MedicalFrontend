@@ -159,6 +159,18 @@ const RowOptions = ({ id, row }: { id: number | string; row: any }) => {
             // Puedes manejar errores aquí si es necesario
         }
     };
+    const handleDeleteCita = async () => {
+        try {
+          // Llama al endpoint para eliminar la cita
+          await axios.delete(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/citas/${row.id_cita}`);
+          // Puedes agregar lógica adicional después de una eliminación exitosa si es necesario
+          // Cierra el menú de opciones de fila
+          handleRowOptionsClose();
+        } catch (error) {
+          console.error('Error al eliminar:', error);
+          // Puedes manejar errores aquí si es necesario
+        }
+      };
 
     const handleClick = (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -218,7 +230,12 @@ const RowOptions = ({ id, row }: { id: number | string; row: any }) => {
                 )}
                 <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
                     <Icon icon='mdi:delete-outline' fontSize={20} />
-                    Borrar Cita
+                    Quita Cita de Espera
+                </MenuItem>
+
+                <MenuItem onClick={handleDeleteCita} sx={{ '& svg': { mr: 2 } }}>
+                    <Icon icon='mdi:delete-outline' fontSize={20} />
+                    Eliminar Cita
                 </MenuItem>
             </Menu>
         </>
@@ -379,7 +396,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
     const fetchPacientesEnEspera = async (day: string) => {
         const response = await fetch(`http://${process.env.NEXT_PUBLIC_SERVER_HOST}/citas/by-day/${day}`);
-        
+
         if (!response.ok) {
             throw new Error(`Error al obtener pacientes en espera: ${response.statusText}`);
         }
@@ -471,7 +488,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
                             sx={{ mb: 2 }}
                         />
                     </CardContent>
-                  
+
                 </Card>
             </Grid>
             <Grid item md={12} xs={12}>
@@ -497,9 +514,9 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
                         <Divider />
                         <Grid item xs={4} sx={{ margin: "10px" }}>
-                        <Button variant="contained" onClick={() => openPdfInNewWindow(PdfApiUrl)} sx={{ marginTop: '20px' }}>
-                        Abrir Informe De Citas PDF
-                    </Button>
+                            <Button variant="contained" onClick={() => openPdfInNewWindow(PdfApiUrl)} sx={{ marginTop: '20px' }}>
+                                Abrir Informe De Citas PDF
+                            </Button>
                         </Grid>
 
                         <Grid item xs={12} sx={{ margin: "10px" }}>
