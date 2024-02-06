@@ -232,8 +232,10 @@ const RowOptions = ({ id, row }: { id: number | string; row: any }) => {
         </MenuItem>
 
         <MenuItem onClick={handleDeleteCita} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='mdi:delete-outline' fontSize={20} />
-          Eliminar Cita
+          <Icon icon='mdi:delete-outline' fontSize={20}/>
+          <Typography noWrap sx={{ color: 'red', textTransform: 'capitalize' }}>
+              Eliminar Cita
+          </Typography>
         </MenuItem>
       </Menu>
     </>
